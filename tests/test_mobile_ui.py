@@ -23,7 +23,8 @@ def test_html_home_working_sessions() -> None:
     # Cache-bust so phones pick up the redesign
     assert "app.css?v=" in html
     assert "app.js?v=" in html
-    assert "20260905p" in html
+    assert "20260905q" in html
+    assert "inter-latin-400.woff2" in html
     # Pretty home: cards + top New; no render-blocking Google Fonts
     assert 'id="btn-topbar-new"' in html
     assert "empty-hero" in html
@@ -34,6 +35,8 @@ def test_html_home_working_sessions() -> None:
     assert "fonts.gstatic.com" not in html
     assert "<style>" in html
     assert ".hidden, [hidden]" in html or ".hidden,[hidden]" in html
+    assert (STATIC / "fonts" / "inter-latin-400.woff2").is_file()
+    assert (STATIC / "fonts" / "inter-latin-600.woff2").is_file()
 
 
 def test_html_modal_primary_actions_intact() -> None:
@@ -89,7 +92,8 @@ def test_css_mobile_touch_targets() -> None:
     assert ".home-session-cta" in css
     assert ".btn-block" in css
     assert "@media (max-width: 899px)" in css
-    assert "--font-ui: system-ui" in css
+    assert "--font-ui: Inter, system-ui" in css
+    assert "inter-latin-400.woff2" in css
     assert "#app.is-home .composer-shell" in css
     assert ".sheet-handle" in css
     assert "appearance: none" in css
