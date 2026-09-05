@@ -168,7 +168,22 @@ http://127.0.0.1:8787          # this PC only
    ```
 
 5. Optional: **Add to Home Screen** for an app-like shell.
-6. Pick a session under **Working**, wait for history + load, then chat.
+6. On the empty home, tap a **Working** session to resume (or **New session** → pick folder → **Start new session**). Wait for history + load, then chat.
+
+### Reload the UI after an update (PC install)
+
+Static files live in `static/` (`index.html`, `app.css`, `app.js`). The Python hub/ACP process does not need a rebuild for CSS/JS, but browsers cache aggressively.
+
+1. On the PC, pull the branch and restart so the process is serving the new files:
+
+   ```powershell
+   git pull
+   .\restart-hub.ps1
+   ```
+
+2. On the phone, **hard-refresh** (Brave: tap the lock/menu → Refresh, or close the tab and reopen `http://<tailscale-ip>:8787`). Look for `app.css?v=…` / `app.js?v=…` in the URL bar request — the query must match the new `index.html`.
+
+A hub restart is enough after a Python change; a phone hard-refresh is required after a `static/` change even if the hub stayed up.
 
 ### If Safari still will not load
 

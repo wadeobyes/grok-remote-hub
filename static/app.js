@@ -4234,6 +4234,110 @@
     return !s.isSubagent;
   }
 
+  function compareSessionsNewest(a, b) {
+    const ap = isPinned(a.sessionId) ? 1 : 0;
+    const bp = isPinned(b.sessionId) ? 1 : 0;
+    if (ap !== bp) return bp - ap;
+    const rank = (s) => {
+      const st = sessionLiveStatus(s.sessionId) || s.liveStatus || "idle";
+      if (st === "question") return 2;
+      if (st === "working" || st === "stuck") return 1;
+      return 0;
+    };
+    const ar = rank(a);
+    const br = rank(b);
+    if (ar !== br) return br - ar;
+    const at = a.updatedAt || "";
+    const bt = b.updatedAt || "";
+    if (at === bt) return 0;
+    return at < bt ? 1 : -1;
+  }
+
+  function homeWorkingSessions() {
+    return (state.sessions || [])
+      .filter((s) => isWorkingSession(s))
+      .slice()
+      .sort(compareSessionsNewest)
+      .slice(0, 8);
+  }
+
+  function renderHomeSessions() {
+    const host = document.getElementById("home-sessions");
+    const empty = document.getElementById("home-sessions-empty");
+    const heading = document.getElementById("home-sessions-heading");
+    if (!host) return;
+    const items = homeWorkingSessions();
+    host.innerHTML = "";
+    if (empty) empty.classList.toggle("hidden", items.length > 0);
+    if (heading) heading.classList.toggle("hidden", items.length === 0);
+    for (const s of items) {
+      const liveStatus = sessionLiveStatus(s.sessionId) || s.liveStatus || "idle";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "home-session-row";
+      btn.setAttribute("role", "listitem");
+      btn.setAttribute("data-session-id", s.sessionId || "");
+      if (liveStatus === "working") btn.classList.add("turn-live", "status-working");
+      if (liveStatus === "question") btn.classList.add("turn-live", "status-question");
+      if (liveStatus === "stuck") btn.classList.add("turn-live", "status-stuck");
+
+      const bar = document.createElement("span");
+      bar.className = "live-bar";
+      bar.setAttribute("aria-hidden", "true");
+
+      const body = document.createElement("span");
+      body.className = "home-session-body";
+
+      const titleRow = document.createElement("span");
+      titleRow.className = "title-row";
+      const title = document.createElement("span");
+      title.className = "title";
+      title.textContent = s.title || "Untitled session";
+      titleRow.appendChild(title);
+      if (liveStatus === "stuck") {
+        const pill = document.createElement("span");
+        pill.className = "session-pill status-stuck";
+        pill.textContent = "Stuck";
+        titleRow.appendChild(pill);
+      } else if (liveStatus === "working") {
+        const pill = document.createElement("span");
+        pill.className = "session-pill status-working";
+        pill.textContent = "Working";
+        titleRow.appendChild(pill);
+      } else if (liveStatus === "question") {
+        const pill = document.createElement("span");
+        pill.className = "session-pill status-question";
+        pill.textContent = "Needs reply";
+        titleRow.appendChild(pill);
+      }
+
+      const meta = document.createElement("span");
+      meta.className = "meta";
+      const proj = document.createElement("span");
+      proj.textContent = basename(s.cwd) || "project";
+      meta.appendChild(proj);
+      const time = document.createElement("span");
+      time.textContent = relativeTime(s.updatedAt);
+      meta.appendChild(time);
+
+      const cta = document.createElement("span");
+      cta.className = "home-session-cta";
+      cta.textContent =
+        liveStatus === "question"
+          ? "Reply"
+          : liveStatus === "working" || liveStatus === "stuck"
+            ? "Resume"
+            : "Open";
+
+      body.append(titleRow, meta);
+      btn.append(bar, body, cta);
+      btn.addEventListener("click", () => {
+        openSession(s);
+      });
+      host.appendChild(btn);
+    }
+  }
+
   function renderSessions() {
     const q = state.filter.trim().toLowerCase();
     const items = state.sessions
@@ -4252,25 +4356,7 @@
         );
       })
       .slice()
-      .sort((a, b) => {
-        const ap = isPinned(a.sessionId) ? 1 : 0;
-        const bp = isPinned(b.sessionId) ? 1 : 0;
-        if (ap !== bp) return bp - ap;
-        // Question sessions first (agent waiting), then working/stuck, then rest.
-        const rank = (s) => {
-          const st = sessionLiveStatus(s.sessionId) || s.liveStatus || "idle";
-          if (st === "question") return 2;
-          if (st === "working" || st === "stuck") return 1;
-          return 0;
-        };
-        const ar = rank(a);
-        const br = rank(b);
-        if (ar !== br) return br - ar;
-        const at = a.updatedAt || "";
-        const bt = b.updatedAt || "";
-        if (at === bt) return 0;
-        return at < bt ? 1 : -1;
-      });
+      .sort(compareSessionsNewest);
 
     els.sessionList.innerHTML = "";
     els.sessionEmpty.classList.toggle("hidden", items.length > 0);
@@ -4463,6 +4549,7 @@
       els.sessionList.appendChild(btn);
     }
     _sessionPillRanks = nextPillRanks;
+    renderHomeSessions();
   }
 
   function emptyStreamBuffers() {
@@ -4724,9 +4811,14 @@
             <h2>No session selected</h2>
             <p class="empty-sub">Pick a chat from the sidebar, or start a new one.</p>
             <p>Your project sessions appear under Working. Subagent runs are under Subagent.</p>
+            <div id="home-sessions-wrap" class="home-sessions-wrap">
+              <h3 class="home-sessions-heading" id="home-sessions-heading">Working</h3>
+              <div id="home-sessions" class="home-sessions" role="list" aria-labelledby="home-sessions-heading"></div>
+              <p id="home-sessions-empty" class="home-sessions-empty muted">No working sessions yet. Start one below.</p>
+            </div>
             <div class="empty-actions">
-              <button type="button" id="btn-empty-sessions" class="btn btn-ghost">Browse sessions</button>
-              <button type="button" id="btn-empty-new" class="btn btn-accent">New session</button>
+              <button type="button" id="btn-empty-new" class="btn btn-accent btn-block">New session</button>
+              <button type="button" id="btn-empty-sessions" class="btn btn-ghost btn-block">Browse sessions</button>
             </div>
           </div>`;
         els.transcript.appendChild(wrap);
@@ -4734,6 +4826,7 @@
         $("#btn-empty-new", wrap).addEventListener("click", openNewModal);
       }
       wrap.hidden = false;
+      renderHomeSessions();
       setSessionMode("none");
       syncBrowseSessionsVisibility();
     } else {
@@ -11887,6 +11980,10 @@
     pickUserPromptIndex,
     syncStickyUserFromScroll,
     scheduleStickyUserFromScroll,
+    renderHomeSessions,
+    homeWorkingSessions,
+    compareSessionsNewest,
+    isWorkingSession,
   };
 
   bootstrap();

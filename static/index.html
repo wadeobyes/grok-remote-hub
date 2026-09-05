@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/app.css?v=20260726a" />
+  <link rel="stylesheet" href="/app.css?v=20260905m" />
 </head>
 <body style="background:#0a0c10;color:#d6deea">
   <div id="app">
@@ -145,9 +145,14 @@
                 <h2>No session selected</h2>
                 <p class="empty-sub">Pick a chat from the sidebar, or start a new one.</p>
                 <p>Your project sessions appear under Working. Subagent runs are under Subagent.</p>
+                <div id="home-sessions-wrap" class="home-sessions-wrap">
+                  <h3 class="home-sessions-heading" id="home-sessions-heading">Working</h3>
+                  <div id="home-sessions" class="home-sessions" role="list" aria-labelledby="home-sessions-heading"></div>
+                  <p id="home-sessions-empty" class="home-sessions-empty muted">No working sessions yet. Start one below.</p>
+                </div>
                 <div class="empty-actions">
-                  <button type="button" id="btn-empty-sessions" class="btn btn-ghost">Browse sessions</button>
-                  <button type="button" id="btn-empty-new" class="btn btn-accent">New session</button>
+                  <button type="button" id="btn-empty-new" class="btn btn-accent btn-block">New session</button>
+                  <button type="button" id="btn-empty-sessions" class="btn btn-ghost btn-block">Browse sessions</button>
                 </div>
               </div>
             </div>
@@ -240,7 +245,7 @@
         <input type="search" id="project-search" class="input" placeholder="Filter projects" autocomplete="off" />
         <div class="project-create project-create-secondary">
           <input type="text" id="project-new-name" class="input" placeholder="New folder name" autocomplete="off" />
-          <button type="button" id="btn-create-project" class="btn btn-sm btn-ghost">Create</button>
+          <button type="button" id="btn-create-project" class="btn btn-ghost">Create</button>
         </div>
         <div id="project-recents" class="project-recents hidden">
           <div class="project-section-label">Recent</div>
@@ -265,9 +270,9 @@
         <p class="muted modal-help" id="project-entry-choice-help">Continue a previous session or start fresh in this folder.</p>
         <p class="project-entry-cwd muted" id="project-entry-cwd"></p>
         <div id="project-entry-priors" class="project-entry-priors" role="list"></div>
-        <div class="project-browser-actions">
-          <button type="button" id="btn-entry-start-new" class="btn btn-sm btn-accent">Start new session</button>
-          <button type="button" id="btn-entry-back" class="btn btn-sm btn-ghost">Back</button>
+        <div class="project-browser-actions project-entry-actions">
+          <button type="button" id="btn-entry-start-new" class="btn btn-accent btn-block">Start new session</button>
+          <button type="button" id="btn-entry-back" class="btn btn-ghost btn-block">Back</button>
         </div>
       </div>
     </div>
@@ -357,6 +362,6 @@
   <script src="/vendor/marked.min.js"></script>
   <script src="/vendor/purify.min.js"></script>
   <!-- cache-bust: blank-page fix; mermaid loads on demand from app.js when needed -->
-  <script src="/app.js?v=20260726a"></script>
+  <script src="/app.js?v=20260905m"></script>
 </body>
 </html>
