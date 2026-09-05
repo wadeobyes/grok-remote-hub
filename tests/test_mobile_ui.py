@@ -23,6 +23,20 @@ def test_html_home_working_sessions() -> None:
     # Cache-bust so phones pick up the redesign
     assert "app.css?v=" in html
     assert "app.js?v=" in html
+    assert "20260905q" in html
+    assert "inter-latin-400.woff2" in html
+    # Pretty home: cards + top New; no render-blocking Google Fonts
+    assert 'id="btn-topbar-new"' in html
+    assert "empty-hero" in html
+    assert "sheet-handle" in html
+    assert "is-home" in html
+    assert "system-ui" in html
+    assert "fonts.googleapis.com/css" not in html
+    assert "fonts.gstatic.com" not in html
+    assert "<style>" in html
+    assert ".hidden, [hidden]" in html or ".hidden,[hidden]" in html
+    assert (STATIC / "fonts" / "inter-latin-400.woff2").is_file()
+    assert (STATIC / "fonts" / "inter-latin-600.woff2").is_file()
 
 
 def test_html_modal_primary_actions_intact() -> None:
@@ -46,8 +60,10 @@ def test_js_home_sessions_render() -> None:
     assert "function compareSessionsNewest" in js
     assert "function homeWorkingSessions" in js
     assert "function renderHomeSessions" in js
+    assert "function setAppHomeMode" in js
     assert "renderHomeSessions()" in js
     assert "home-session-row" in js
+    assert "is-home" in js
     assert 'textContent = "Resume"' in js or 'cta.textContent' in js
     # Rail sort still used for home + list
     render_idx = js.find("function renderSessions")
@@ -65,6 +81,7 @@ def test_js_home_sessions_render() -> None:
     hooks = js[hooks_idx : hooks_idx + 2800]
     assert "renderHomeSessions" in hooks
     assert "homeWorkingSessions" in hooks
+    assert "setAppHomeMode" in hooks
 
 
 def test_css_mobile_touch_targets() -> None:
@@ -75,6 +92,11 @@ def test_css_mobile_touch_targets() -> None:
     assert ".home-session-cta" in css
     assert ".btn-block" in css
     assert "@media (max-width: 899px)" in css
+    assert "--font-ui: Inter, system-ui" in css
+    assert "inter-latin-400.woff2" in css
+    assert "#app.is-home .composer-shell" in css
+    assert ".sheet-handle" in css
+    assert "appearance: none" in css
 
     mobile = css[css.find("/* Mobile-first touch") :]
     assert mobile, "mobile-first touch section missing"

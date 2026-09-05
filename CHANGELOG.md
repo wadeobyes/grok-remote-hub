@@ -10,6 +10,7 @@ This file is the **public narrative**. Session chat context is not required to u
 ## [Unreleased]
 
 ### Changed
+- **Mobile pretty Hub UI** — self-hosted Inter + system-ui (no Google Fonts / no serif fallback), card home, Working resume cards, sticky primary Send, bottom-sheet modals with a grab handle, idle image/video chrome hidden. Critical inline CSS so Tailscale/Brave never flashes raw desktop HTML. Touch ≥44px kept. Desktop (≥900px) stays compact. Static cache-bust `?v=20260905q`.
 - **Mobile-first Hub UI** — phone/tablet portrait uses ≥44px touch targets, full-width primary actions (New / Send / Stop / Approve / Submit / Start), stacked composer above the keyboard, and sheet-style plan / agent-question / new-session / site-preview modals. Desktop (≥900px) stays compact. Working (running/recent) sessions are listed on the empty home for one-tap resume. Static cache-bust `?v=20260905n`.
 
 ---
