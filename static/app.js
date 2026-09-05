@@ -1044,6 +1044,7 @@
     btnMenu: $("#btn-menu"),
     btnRailCollapse: $("#btn-rail-collapse"),
     btnNew: $("#btn-new"),
+    btnTopbarNew: $("#btn-topbar-new"),
     btnEmptySessions: $("#btn-empty-sessions"),
     btnEmptyNew: $("#btn-empty-new"),
     app: $("#app"),
@@ -1372,7 +1373,7 @@
   }
 
   function clearTopbarSessionMeta() {
-    if (els.chatTitle) els.chatTitle.textContent = "Select a session";
+    if (els.chatTitle) els.chatTitle.textContent = "Grok Hub";
     if (els.btnRenameSession) els.btnRenameSession.classList.add("hidden");
     setViewPlanVisible(false);
     state.sessionPlan = null;
@@ -4792,7 +4793,14 @@
     }
   }
 
+  function setAppHomeMode(isHome) {
+    const app = els.app || document.getElementById("app");
+    if (app) app.classList.toggle("is-home", !!isHome);
+    if (els.btnTopbarNew) els.btnTopbarNew.classList.toggle("hidden", !isHome);
+  }
+
   function showEmptyMain(show) {
+    setAppHomeMode(!!show);
     if (show) {
       // Hide panes; show empty card in transcript shell
       if (els.transcript) {
@@ -4808,9 +4816,12 @@
         wrap.className = "empty-main";
         wrap.innerHTML = `
           <div class="empty-card">
-            <h2>No session selected</h2>
-            <p class="empty-sub">Pick a chat from the sidebar, or start a new one.</p>
-            <p>Your project sessions appear under Working. Subagent runs are under Subagent.</p>
+            <div class="empty-hero">
+              <span class="empty-mark" aria-hidden="true"></span>
+              <h2>No session selected</h2>
+              <p class="empty-sub">Pick a chat from the sidebar, or start a new one.</p>
+              <p class="empty-lead">Your project sessions appear under Working. Subagent runs are under Subagent.</p>
+            </div>
             <div id="home-sessions-wrap" class="home-sessions-wrap">
               <h3 class="home-sessions-heading" id="home-sessions-heading">Working</h3>
               <div id="home-sessions" class="home-sessions" role="list" aria-labelledby="home-sessions-heading"></div>
@@ -10943,6 +10954,7 @@
       els.btnRailCollapse.addEventListener("click", closeRail);
     }
     els.btnNew.addEventListener("click", openNewModal);
+    if (els.btnTopbarNew) els.btnTopbarNew.addEventListener("click", openNewModal);
     if (els.btnEmptyNew) els.btnEmptyNew.addEventListener("click", openNewModal);
     if (els.btnEmptySessions) els.btnEmptySessions.addEventListener("click", openRail);
     if (els.btnRenameSession) {
@@ -11985,6 +11997,7 @@
     homeWorkingSessions,
     compareSessionsNewest,
     isWorkingSession,
+    setAppHomeMode,
   };
 
   bootstrap();
