@@ -181,7 +181,7 @@ Static files live in `static/` (`index.html`, `app.css`, `app.js`). The Python h
    .\restart-hub.ps1
    ```
 
-2. On the phone, **hard-refresh** (Brave: tap the lock/menu → Refresh, or close the tab and reopen `http://<tailscale-ip>:8787`). Look for `app.css?v=…` / `app.js?v=…` in the URL bar request — the query must match the new `index.html`.
+2. On the phone, **hard-refresh** (Brave: tap the lock/menu → Refresh, or close the tab and reopen `http://<tailscale-ip>:8787`). Look for `app.css?v=20260905n` / `app.js?v=20260905n` (or newer) — the query must match the new `index.html`.
 
 A hub restart is enough after a Python change; a phone hard-refresh is required after a `static/` change even if the hub stayed up.
 

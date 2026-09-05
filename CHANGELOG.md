@@ -10,7 +10,7 @@ This file is the **public narrative**. Session chat context is not required to u
 ## [Unreleased]
 
 ### Changed
-- **Mobile-first Hub UI** — phone/tablet portrait uses ≥44px touch targets, full-width primary actions (New / Send / Stop / Approve / Submit / Start), stacked composer above the keyboard, and sheet-style plan / agent-question / new-session / site-preview modals. Desktop (≥900px) stays compact. Working (running/recent) sessions are listed on the empty home for one-tap resume. Static cache-bust `?v=20260905m`.
+- **Mobile-first Hub UI** — phone/tablet portrait uses ≥44px touch targets, full-width primary actions (New / Send / Stop / Approve / Submit / Start), stacked composer above the keyboard, and sheet-style plan / agent-question / new-session / site-preview modals. Desktop (≥900px) stays compact. Working (running/recent) sessions are listed on the empty home for one-tap resume. Static cache-bust `?v=20260905n`.
 
 ---
 

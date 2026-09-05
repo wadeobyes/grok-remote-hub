@@ -11962,6 +11962,7 @@
     },
     setSessionsForTest(items) {
       state.sessions = Array.isArray(items) ? items : [];
+      renderSessions();
     },
     getSessionIdsForTest() {
       return {
